@@ -60,12 +60,12 @@ public class EmailCrawlerService {
             for (String email : emails) {
                 email = email.toLowerCase().trim();
                 if (ValidationUtils.isValidEmail(email)) {
-                    System.out.println("📧 페이지에서 발견: " + email);
+//                    System.out.println("📧 페이지에서 발견: " + email);
                     return email;
                 }
             }
 
-            System.out.println("❌ 유효한 이메일을 찾을 수 없음");
+//            System.out.println("❌ 유효한 이메일을 찾을 수 없음");
             return "";
 
         } catch (Exception e) {

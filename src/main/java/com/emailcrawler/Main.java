@@ -3,6 +3,7 @@ package com.emailcrawler;
 
 import com.emailcrawler.service.CsvProcessorService;
 import com.emailcrawler.service.MultiThreadCsvProcessorService;
+import com.emailcrawler.service.MultiThreadCsvProcessorService_Temp;
 
 import java.util.Scanner;
 
@@ -30,7 +31,7 @@ public class Main {
 
             // CSV 처리 서비스 실행 
             //CsvProcessorService : 싱글 스레드 --> MultiThreadCsvProcessorService : 멀티 스레드(동시 실행 스레드 5개/ 대기 시간 200ms)
-            MultiThreadCsvProcessorService processor = new MultiThreadCsvProcessorService();
+            MultiThreadCsvProcessorService_Temp processor = new MultiThreadCsvProcessorService_Temp();
             processor.processCsvFile(csvPath);
 
         } catch (Exception e) {
