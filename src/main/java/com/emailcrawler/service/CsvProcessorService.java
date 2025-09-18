@@ -80,8 +80,9 @@ public class CsvProcessorService {
             System.out.println("🌐 웹사이트: " + row.getWebsite());
 
             if (row.getWebsite().isEmpty()) {
-                System.out.println("❌ 웹사이트 URL이 비어있음");
+                System.out.println("❌ 웹사이트 URL이 비어있음"); //2초 대기 없이 넘기게 수정.
                 row.setFoundEmail("X");
+                continue; //🔥 NEW: 대기 없이 바로 다음 반복으로
             } else {
                 // 웹사이트 크롤링
                 String foundEmail = emailCrawler.crawlWebsiteForEmail(row.getWebsite());
@@ -97,13 +98,17 @@ public class CsvProcessorService {
             // 서버 부하 방지 (마지막이 아닌 경우만)
             if (i < rows.size() - 1) {
                 try {
-                    System.out.println("⏳ 2초 대기...");
-                    Thread.sleep(2000);
+                    System.out.println("⏳ 0.2초 대기...");
+                    //20,000개 데이터 --> Thread.sleep(2000); 14시간
+                    //20,000개 데이터 --> Thread.sleep(200); 3~6시간
+                    Thread.sleep(200);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     break;
                 }
             }
+
+
         }
     }
 
