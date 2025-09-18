@@ -4,6 +4,7 @@ import com.emailcrawler.model.CsvRow;
 import com.emailcrawler.util.CsvParser;
 import com.emailcrawler.util.FileEncodingDetector;
 
+import java.io.FileWriter;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -192,13 +193,47 @@ public class MultiThreadCsvProcessorService {
         }
     }
 
-    // 기타 헬퍼 메소드들...
+    // 기타 헬퍼 메소드들.
     private String generateOutputPath(String originalPath) {
         return originalPath.replace(".csv", "_updated.csv");
     }
 
     private void saveCsvData(List<CsvRow> rows, String outputPath) throws Exception {
-        // 기존 saveCsvData 로직과 동일
+        try (FileWriter writer = new FileWriter(outputPath, java.nio.charset.StandardCharsets.UTF_8)) {
+            // UTF-8 BOM 추가 (Excel 호환)
+            writer.write('\ufeff');
+
+            for (CsvRow row : rows) {
+                if (row.isHeader()) {
+                    // 헤더 그대로 출력
+                    writer.write(String.join(",", row.getValues()) + "\n");
+                } else {
+                    // 데이터 행에서 Email 컬럼 업데이트
+                    String[] updatedValues = row.getValues();
+                    if (row.getEmailCol() >= 0 && row.getEmailCol() < updatedValues.length) {
+                        updatedValues[row.getEmailCol()] = row.getFoundEmail();
+                    }
+
+                    // CSV 형식으로 출력
+                    for (int i = 0; i < updatedValues.length; i++) {
+                        if (i > 0) writer.write(",");
+                        writer.write(escapeCsvField(updatedValues[i]));
+                    }
+                    writer.write("\n");
+                }
+            }
+        }
+
         System.out.println("💾 파일 저장 완료: " + outputPath);
+    }
+
+    // escapeCsvField 메소드도 추가 필요
+    private String escapeCsvField(String field) {
+        if (field == null) return "";
+
+        if (field.contains(",") || field.contains("\"") || field.contains("\n")) {
+            return "\"" + field.replace("\"", "\"\"") + "\"";
+        }
+        return field;
     }
 }
