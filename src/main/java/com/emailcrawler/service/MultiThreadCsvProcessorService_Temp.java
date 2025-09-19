@@ -186,7 +186,7 @@ public class MultiThreadCsvProcessorService_Temp {
                     System.out.printf("⚡ 속도: %.1f 사이트/분\n",
                             completed > 0 ? (double)completed * 60 / elapsedSec : 0);
 
-                    System.out.println("═".repeat(35));
+                    System.out.println("═".repeat(15));
                     System.out.println("💡 Ctrl+C로 중단 가능");
 
                     Thread.sleep(2000); // 2초마다 업데이트
